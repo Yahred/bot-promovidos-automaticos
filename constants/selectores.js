@@ -1,0 +1,15 @@
+export const SELECTORES = {
+  TABLA_ZONA: '#tablaDatosZona',
+  TABLA_SECCIONALES: '#tablaDatosSeccional',
+  TABLA_COMITES: '#tablaDatosComite',
+  TABLA_PROMOTORES: '#tablaDatosPromotor',
+  ICONO_USUARIOS: '.fa-users',
+  BOTON_ICONO_USUARIOS: 'button > i.fa-users',
+  BOTON_VOLVER_SECCIONAL: '#botonVolverSeccional',
+  BOTON_VOLVER_COMITE: '#botonVolverComite',
+  BOTON_VOLVER_PROMOTOR: '#botonVolverPromotor',
+  BOTON_VOLVER_PROMOVIDOS: '#botonVolverPromovido',
+  BOTON_AGREGAR_PROMOVIDO: '#botonAgregarPromovido',
+  BOTON_GUARDAR_GENERAL: '#botonGuardarGeneral',
+  MODAL_CAPTURA_PROMOVIDO: '#modalCapturaGeneral',
+}

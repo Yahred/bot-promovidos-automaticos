@@ -1,0 +1,18 @@
+version: '1'
+name: 'promovidos-compose'
+services:
+  promovidos-db:
+    container_name: my-mongodb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:27017"
+    volumes:
+      - /data/:/data/db
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
