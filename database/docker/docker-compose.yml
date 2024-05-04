@@ -1,0 +1,17 @@
+version: '1'
+name: 'promovidos-crawler'
+services:
+  promovidos-db:
+    container_name: promovidos-db
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "5000:27017"
+    volumes:
+      - ./data/:/data/db
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
