@@ -1,47 +1,43 @@
+import 'dotenv/config';
 import async from 'async';
-import { PASS_11, PASS_14, USUARIO_11, USUARIO_14 } from "./constants/sesion.js";
-import { ZONAS_11, ZONAS_14 } from "./constants/zonas.js";
-import { ejecutarRegistro } from "./ejecutar-registro.js";
-import logger from "./utils/logger.js";
-import { Task } from '@mui/icons-material';
+import os from 'os';
 
-const { ZONA: zona, USUARIO: usuario, PASS: pass } = process.env;
+import { main, obtenerZonas } from "./ejecutar-registro.js";
+import logger from "./functions/logger.js";
 
-const chunkSize = 8;
+const { MAX_CONCURRENCY } = process.env;
 
-/*
-console.log(ZONAS_14.length);
-for (let i = initial; i < ZONAS_14.length; i += chunkSize) {
-  const zonas = ZONAS_14.slice(i, chunkSize + i);
-  logger.info(`Iniciando proceso zonas: ${zonas}`);
-  await Promise.allSettled(zonas.map((zona) => ejecutarRegistro(zona, { usuario: USUARIO_14, pass: PASS_14 })));
-}
+console.log(`Iniciando crawler, Env -> ${process.env.NODE_ENV}`);
 
-*/
+const zonas = await obtenerZonas();
+console.log('Zonas: ', zonas);
 
-const tareas = ZONAS_14.map((zona) => ({
+const ultimaZona = zonas.pop();
+
+const tareas = zonas.map((zona) => ({
   name: zona, 
-  action: async () => ejecutarRegistro(zona, { 
-    usuario: USUARIO_14,
-    pass: PASS_14
-  }),
+  action: async () => main(zona),
 }));
+
+const chunkSize = MAX_CONCURRENCY === 'auto' ? os.cpus.length() : Number(MAX_CONCURRENCY);
 
 const cola = async.queue(async ({ name, action }) => {
   try {
     logger.info(`Ejecutando zona: ${name}`)
     await action();
     logger.info(`Zona ${name} finalizada`)
+    
+    if (name === ultimaZona) {
+      logger.info('Proceso finalizado');
+      process.exit(0);
+    }
   } catch (error) {
     logger.error(`Error en zona: ${name} error: ${error}`)
   }
-}, chunkSize)
+}, chunkSize);
 
 tareas.forEach((task) => {
   cola.push(task, (err) => {
     if (err) return logger.error(`Error en la zona ${task.name} err: ${err}`);
   })
 });
-
-
-logger.log('info', `Proceso finalizado Distrito 14`);

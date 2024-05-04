@@ -19,11 +19,14 @@ const dateFormat = '[yyyy-mm-dd hh:mm:ss]'
  * @param {import('../types').Promovido} promovido 
  */
 export function logPromovidoRegistrado(promovido) {
-  logger.log('info', `SE REGISTRÓ PROMOVIDO ${promovido.nombre} ${promovido.paterno} ${promovido.materno}`);
+  const timestamp = moment().format(dateFormat);
+  logger.log('info', `${timestamp}: SE REGISTRÓ PROMOVIDO ${promovido.nombre} ${promovido.paterno} ${promovido.materno}`);
 }
 
 export function logErrorPromovido(error) {
-  logger.error('error', `ERROR AL INTENTAR REGISTRAR { Error: ${error.message} }`);
+  const timestamp = moment().format(dateFormat);
+
+  logger.error('error', `${timestamp} ERROR AL INTENTAR REGISTRAR { Error: ${error.message} }`);
 }
 
 export default logger;

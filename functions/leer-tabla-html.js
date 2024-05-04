@@ -132,7 +132,7 @@ export async function obtenerDatosPromotores(page) {
 export async function obtenerDatosPromovidos(page) {
   const promovidos = await leerTabla({
     page,
-    idTabla: SELECTORES.TABLA_PROMOTORES,
+    idTabla: SELECTORES.TABLA_PROMOVIDOS,
     props: {
       3: 'nombre',
       4: 'paterno',
@@ -180,7 +180,7 @@ export async function leerTabla({
       for (const [index, propName] of Object.entries(props)) {
         obj[propName] = rowData[index];
       }
-      obj.numeroCoordinadores = Number(spanNumeroCoordinadores.innerHTML);
+      obj.numeroCoordinadores = Number(spanNumeroCoordinadores?.innerHTML);
 
       for (const [propName, computeFunction] of Object.entries(computedProps)) {
         let func;

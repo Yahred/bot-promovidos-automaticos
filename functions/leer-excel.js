@@ -48,19 +48,7 @@ const promovidoEsquema = {
   }
 };
 
-const comitesDistritoEsquema = {
-  ZONA: {
-    prop: 'zona',
-    type: String,
-  },
-  'SECCIÓN': {
-    prop: 'seccion',
-    type: Number,
-  },
-};
-
-const PROMOVIDOS_PATH = '../data/simpatizantes_dtt_14_1.xlsx'
-const COMITES_DISTRITO_PATH = '../data/Comites_Distrito_14_AG_COT_RRM.xlsx'
+const { PROMOVIDOS_PATH }= process.env;
 
 /**
  * 
@@ -94,15 +82,4 @@ export async function leerExcelPromovidos(secciones = []) {
   })
 
   return promovidos;
-}
-
-/**
- * 
- * @returns {Promise<{ zona: number; seccion: number; }[]>}
- */
-export async function leerExcelComitesDistrito() {
-  const { rows } = await readXlsxFile(join(__dirname, COMITES_DISTRITO_PATH), {
-    schema: comitesDistritoEsquema,
-  });
-  return rows;
 }

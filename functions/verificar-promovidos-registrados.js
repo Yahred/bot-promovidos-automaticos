@@ -2,7 +2,7 @@ import Promovido from "../models/promovido.js";
 
 /**
  *
- * @param {import('../types').Promovido[]} promovidos
+ * @param {import('../types.js').Promovido[]} promovidos
  */
 export async function verificarPromovidosRegistrados(promovidos) {
   await Promise.all(

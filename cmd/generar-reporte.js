@@ -3,7 +3,6 @@ import path from 'path';
 import fs from 'fs/promises';
 
 import Promovido from "../models/promovido.js";
-import { leerExcelComitesDistrito, obtenerSeccionesPromovidos } from "../utils/leer-excel.js";
 import { existeArchivo } from '../utils/existe-archivo.js';
 
 

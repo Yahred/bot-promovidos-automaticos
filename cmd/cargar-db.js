@@ -1,9 +1,12 @@
+import mongoose from "mongoose";
+
 import Promovido from "../models/promovido.js";
 
-import { leerExcelPromovidos, obtenerSeccionesPromovidos } from "../utils/leer-excel.js";
+import { leerExcelPromovidos, obtenerSeccionesPromovidos } from "../functions/leer-excel.js";
 
 console.time('tiempo');
 
+await Promovido.deleteMany()
 const secciones = await obtenerSeccionesPromovidos(); 
 for (const seccion of secciones) {
   const promovidos = await leerExcelPromovidos([seccion]);
@@ -18,3 +21,6 @@ for (const seccion of secciones) {
 
 console.timeEnd('tiempo');
 console.log('Proceso finalizado correctamente')
+
+mongoose.connection.close()
+process.exit(0);

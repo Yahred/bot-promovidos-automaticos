@@ -3,6 +3,7 @@ export const SELECTORES = {
   TABLA_SECCIONALES: '#tablaDatosSeccional',
   TABLA_COMITES: '#tablaDatosComite',
   TABLA_PROMOTORES: '#tablaDatosPromotor',
+  TABLA_PROMOVIDOS: '#tablaDatosPromovido',
   ICONO_USUARIOS: '.fa-users',
   BOTON_ICONO_USUARIOS: 'button > i.fa-users',
   BOTON_VOLVER_SECCIONAL: '#botonVolverSeccional',
@@ -12,4 +13,5 @@ export const SELECTORES = {
   BOTON_AGREGAR_PROMOVIDO: '#botonAgregarPromovido',
   BOTON_GUARDAR_GENERAL: '#botonGuardarGeneral',
   MODAL_CAPTURA_PROMOVIDO: '#modalCapturaGeneral',
+  SPINNER: '#ajaxBusy',
 }

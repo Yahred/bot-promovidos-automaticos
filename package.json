@@ -7,7 +7,7 @@
   "scripts": {
     "start": "pm2 start ecosystem.config.cjs",
     "dev": "nodemon index.js",
-    "excel": "node cmd/generar-reporte.js",
+    "reporte": "node cmd/generar-reporte.js",
     "load": "node cmd/cargar-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.5",
+    "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
     "moment": "^2.30.1",
     "mongoose": "^8.3.3",
