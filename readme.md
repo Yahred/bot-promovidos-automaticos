@@ -18,6 +18,8 @@ HEADLESS -> Bandera que indica si el crawler debe mostrar el navegador de forma 
 MAX_CONCURRENCY -> Número de máximo de navegadores que se ejecutarán al mismo tiempo (por defecto 'auto', si el valor es auto el crawler tomará el número de núcleos de la computadora)
 PROMOVIDOS_POR_LOTE -> Número de promovidos que se registrará a cada promotor en un ciclo del crawler
 MONGO_CNN -> Cadena de conexión a la base de datos (por defecto "mongodb://localhost:5000/promovidos")
+DISTRITO -> Número de distrito
+TAREA -> Tarea que el crawler va a ejecutar (posibles valores -> registro o limpieza)
 
 3- Ejecutar el siguiente comando en la consola `npm i` (este comando se encarga de instalar las dependencias)
 

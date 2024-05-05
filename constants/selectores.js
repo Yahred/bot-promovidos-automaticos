@@ -5,6 +5,7 @@ export const SELECTORES = {
   TABLA_PROMOTORES: '#tablaDatosPromotor',
   TABLA_PROMOVIDOS: '#tablaDatosPromovido',
   ICONO_USUARIOS: '.fa-users',
+  ICONO_LAPIZ: '.fa-pencil',
   BOTON_ICONO_USUARIOS: 'button > i.fa-users',
   BOTON_VOLVER_SECCIONAL: '#botonVolverSeccional',
   BOTON_VOLVER_COMITE: '#botonVolverComite',
@@ -14,4 +15,14 @@ export const SELECTORES = {
   BOTON_GUARDAR_GENERAL: '#botonGuardarGeneral',
   MODAL_CAPTURA_PROMOVIDO: '#modalCapturaGeneral',
   SPINNER: '#ajaxBusy',
+  TXT_NOMBRE: "#txtNombre",
+  TXT_PATERNO: "#txtPaternoCoordinador",
+  TXT_MATERNO: "#txtMaternoCoordinador",
+  TXT_SECCIONAL: "#txtSeccionalCoordinador",
+  TXT_COLONIA: "#txtColoniaCoordinador", 
+  TXT_CP: "#txtCPCoordinador", 
+  TXT_CALLE: "#txtCalleCoordinador", 
+  TXT_NUMERO: "#txtNumeroCoordinador", 
+  TXT_CLAVE: "#txtClaveElectorCoordinador", 
+  TXT_CELULAR: "#txtCelularCoordinador"
 }

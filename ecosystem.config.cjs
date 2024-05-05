@@ -16,6 +16,7 @@ module.exports = {
       merge_logs: true,
       log_type: "json",
 
+      max_restarts: 1,
       restart_delay: 0,
       max_restarts: 100000, 
       min_uptime: 1000, 

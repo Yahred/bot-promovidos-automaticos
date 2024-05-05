@@ -45,10 +45,14 @@ const promovidoEsquema = {
   'Teléfono de contacto': {
     prop: 'celular',
     type: String,
+  },
+  'Clave INE': {
+    prop: 'claveElectoral',
+    type: String,
   }
 };
 
-const { PROMOVIDOS_PATH }= process.env;
+const { PROMOVIDOS_PATH } = process.env;
 
 /**
  * 

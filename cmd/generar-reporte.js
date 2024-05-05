@@ -1,13 +1,17 @@
+import 'dotenv/config'
+
 import ExcelJS from 'exceljs';
 import path from 'path';
 import fs from 'fs/promises';
 
 import Promovido from "../models/promovido.js";
-import { existeArchivo } from '../utils/existe-archivo.js';
+import { existeArchivo } from '../functions/existe-archivo.js';
+import mongoose from 'mongoose';
 
 
 const cabeceros = 'Sección,Nombre,Paterno,Materno,Teléfono de contacto,Calle,No.ext.,Colonia,CP, Registrado, Error'.split(',');
-const excelDistrito14 = new ExcelJS.Workbook();
+const excel = new ExcelJS.Workbook();
+const { DISTRITO: distrito } = process.env;
 
 let secciones = await Promovido.aggregate([
   {
@@ -36,7 +40,7 @@ for (const seccion of secciones) {
   }).lean();
   console.log(`Sección: ${seccion}, Cantidad promovidos: ${promovidos.length}`);
 
-  const hoja = excelDistrito14.addWorksheet(String(seccion));
+  const hoja = excel.addWorksheet(String(seccion));
   
   const rows = promovidos.map(({
     seccion, nombre, paterno, materno, celular, calle, numeroExterior, colonia, cp, tieneError, guardado
@@ -48,13 +52,13 @@ for (const seccion of secciones) {
 }
 console.timeEnd('Excel');
 
-const PATH_DISTRITO_14 = path.join(process.cwd(), '/out/reporte-total.xlsx');
+const PATH = path.join(process.cwd(), `/out/reporte-${distrito}-total.xlsx`);
 
-if (!(await existeArchivo(PATH_DISTRITO_14))) {
-  await fs.writeFile(PATH_DISTRITO_14, '');
+if (!(await existeArchivo(PATH))) {
+  await fs.writeFile(PATH, '');
 }
 
-await excelDistrito14.xlsx.writeFile(PATH_DISTRITO_14);
+await excel.xlsx.writeFile(PATH);
 
 console.time('Excel guardados');
 
@@ -78,7 +82,8 @@ for (const seccion of secciones) {
 }
 console.timeEnd('Excel guardados');
 
-const PATH_DISTRITO_GUARDADOS_14 = path.join(process.cwd(), '/out/reporte-guardados.xlsx');
+const PATH_DISTRITO_GUARDADOS = path.join(process.cwd(), `/out/reporte-${distrito}-guardados.xlsx`);
 
-await excelGuardados.xlsx.writeFile(PATH_DISTRITO_GUARDADOS_14);
+await mongoose.connection.close();
+await excelGuardados.xlsx.writeFile(PATH_DISTRITO_GUARDADOS);
 process.exit(0);

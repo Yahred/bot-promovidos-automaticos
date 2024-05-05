@@ -14,4 +14,23 @@
  * @property {string} celular
  */
 
+/**
+ * @typedef {Object} PromovidoResponse
+ * @property {{
+ *   ID: number,
+ *   Descripcion: string,
+ *   Nombre: string,
+ *   Paterno: string,
+ *   Materno: string,
+ *   Seccional: number,
+ *   Colonia: string,
+ *   CP: string,
+ *   Calle: string,
+ *   Celular: string,
+ *   ClaveElector: string,
+ *   Numero: string,
+ *   Foto: string
+ * }} d
+ */
+
 export default {};

@@ -1,3 +1,5 @@
+import { SELECTORES } from '../constants/selectores.js';
+
 /**
  * @param {{
  *  idTabla: string;
@@ -17,3 +19,29 @@ export async function clickearFila({
     boton.click();
   }, idTabla, index, selector);
 }
+
+export const clickSeccional = (page, index) => clickearFila({
+  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_SECCIONALES,
+});
+
+export const clickComite = (page, index) => clickearFila({
+  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_COMITES,
+}); 
+
+export const clickPromotor = (page, index) => clickearFila({
+  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_PROMOTORES,
+}); 
+
+export const clickZona = (page, index) => clickearFila({
+  page,
+  index,
+  selector: SELECTORES.ICONO_USUARIOS,
+  idTabla: SELECTORES.TABLA_ZONA,
+});
+
+export const clickPromovido = (page, index) => clickearFila({
+  page,
+  index,
+  selector: SELECTORES.ICONO_LAPIZ,
+  idTabla: SELECTORES.TABLA_PROMOVIDOS,
+})
