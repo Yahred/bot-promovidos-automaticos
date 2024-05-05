@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "WebCrawler-PromovidosAutomaticos",
+      name: "Bot-Promovidos-Automaticos",
       script: "./src/index.js",
       autorestart: true,
       max_memory_restart: "2G",

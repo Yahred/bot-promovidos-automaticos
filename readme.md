@@ -1,4 +1,4 @@
-# Instrucciones para configurar WebCrawler-PromovidosAutomaticos
+# Instrucciones para configurar Bot-Promovidos-Automaticos
 
 Lista de requisitos:
 1- NodeJs instalado
@@ -29,9 +29,9 @@ TAREA -> Tarea que el crawler va a ejecutar (posibles valores -> registro o limp
 
 6- Ejecutar el comando `npm start`, esto iniciará el proceso del crawler con gestor de procesos llamado PM2 y reiniciar la ejecución del crawler cuando este haya dado una vuelta por todas las zonas del usuario.
 
-7- Para matar al crawler una vez se hayan alcanzado las métricas se utiliza el siguiente comando `pm2 stop WebCrawler-PromovidosAutomaticos && pm2 delete WebCrawler-PromovidosAutomaticos` 
+7- Para matar al crawler una vez se hayan alcanzado las métricas se utiliza el siguiente comando `pm2 stop Bot-Promovidos-Automaticos && pm2 delete Bot-Promovidos-Automaticos` 
 
 Bonus:
-* - Si se desea observar en tiempo real la actividad que está realizando el crawler se utiliza el siguiente comando `pm2 logs WebCrawler-PromovidosAutomaticos` 
+* - Si se desea observar en tiempo real la actividad que está realizando el crawler se utiliza el siguiente comando `pm2 logs Bot-Promovidos-Automaticos` 
 
 * - El crawler puede generar un reporte excel con los promovidos que fueron registrados con el siguiente comando `npm run reporte`, los reportes se dejarán en la carpeta out/
