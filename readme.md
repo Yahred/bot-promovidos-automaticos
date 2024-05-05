@@ -10,16 +10,18 @@ Lista de requisitos:
 2- Dentro del archivo `.env` se deben especificar ciertas variables para el funcionamiento del crawler, a continuación se
 detalla cada variable a configurar
 
-NODE_ENV -> indica el ambiente de ejecución por defecto "production"
-PROMOVIDOS_PATH -> Ruta del archivo excel que contiene los promovidos
-USUARIO -> Usuario para acceder al sistema
-PASS -> Contraseña para acceder al sistema
-HEADLESS -> Bandera que indica si el crawler debe mostrar el navegador de forma oculta (por defecto 1)
-MAX_CONCURRENCY -> Número de máximo de navegadores que se ejecutarán al mismo tiempo (por defecto 'auto', si el valor es auto el crawler tomará el número de núcleos de la computadora)
-PROMOVIDOS_POR_LOTE -> Número de promovidos que se registrará a cada promotor en un ciclo del crawler
-MONGO_CNN -> Cadena de conexión a la base de datos (por defecto "mongodb://localhost:5000/promovidos")
-DISTRITO -> Número de distrito
-TAREA -> Tarea que el crawler va a ejecutar (posibles valores -> registro o limpieza)
+| Variable | Descripción | Posibles valores |
+| :---         |     :---     |          --- |
+| `NODE_ENV`   | Indica el ambiente de ejecución por defecto "production"     |  `"production"` o `"development"` |
+| `PROMOVIDOS_PATH`   |  Ruta del archivo excel que contiene los promovidos     | Cualquier ruta |
+| `USUARIO`   |  Usuario para acceder al sistema     |  |
+| `PASS`   |  Contraseña para acceder al sistema     |  |
+| `HEADLESS`   |  Bandera que indica si el crawler debe mostrar el navegador de forma oculta (por defecto 1)     | `0` o `1`  |
+| `MAX_CONCURRENCY`   |  Número de máximo de navegadores que se ejecutarán al mismo tiempo (por defecto 'auto', si el valor es auto el crawler tomará el número de núcleos de la computadora)     | Cualquier número >0 o `auto` |
+| `PROMOVIDOS_POR_LOTE`   |   Número de promovidos que se registrará a cada promotor en un ciclo del crawler     | Cualquier número >0 |
+| `MONGO_CNN`   |  Cadena de conexión a la base de datos (por defecto "mongodb://localhost:5000/promovidos")     |  |
+| `DISTRITO`   |   Número de distrito     |  |
+| `TAREA`   |  Tarea que el bot llevará a cabo (si la tarea es limpieza el bot se dedicará a borrar registros repetidos)     |  `"registro"` o `"limpieza"` |
 
 3- Ejecutar el siguiente comando en la consola `npm i` (este comando se encarga de instalar las dependencias)
 
