@@ -1,12 +1,12 @@
 import 'dotenv/config'
 
+import mongoose from 'mongoose';
 import ExcelJS from 'exceljs';
 import path from 'path';
 import fs from 'fs/promises';
 
 import Promovido from "../models/promovido.js";
 import { existeArchivo } from '../functions/existe-archivo.js';
-import mongoose from 'mongoose';
 
 
 const cabeceros = 'Sección,Nombre,Paterno,Materno,Teléfono de contacto,Calle,No.ext.,Colonia,CP, Registrado, Error'.split(',');

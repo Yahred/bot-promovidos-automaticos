@@ -1,15 +1,14 @@
+import logger from "../functions/logger.js";
 import Promovido from "../models/promovido.js";
 import { SELECTORES } from "../constants/selectores.js";
 import { API_CONSULTA_GENERAL_ID } from "../constants/urls.js";
 import { clickPromovido } from "../functions/clickear-fila.js";
 import { obtenerDatosPromovidos } from "../functions/leer-tabla-html.js";
 import { recorrerPromovidos } from "../functions/recorrer-promovidos.js";
-import logger from "../functions/logger.js";
-
-const BORRAR = "BORRAR";
 
 const { NODE_ENV } = process.env;
 
+const BORRAR = "BORRAR";
 const esProd = NODE_ENV === "production";
 
 /**

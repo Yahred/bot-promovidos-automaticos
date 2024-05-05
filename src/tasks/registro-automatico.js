@@ -7,6 +7,8 @@ import {
   logPromovidoRegistrado,
 } from "../functions/logger.js";
 import { recorrerPromovidos } from "../functions/recorrer-promovidos.js";
+import { clickPromovido, clickearFila } from "../functions/clickear-fila.js";
+import { API_CONSULTA_GENERAL_ID } from "../constants/urls.js";
 
 const { PROMOVIDOS_POR_LOTE } = process.env;
 const promovidosPorLote = Number(PROMOVIDOS_POR_LOTE || 1);
@@ -17,11 +19,8 @@ export async function registrosAutomaticos(zona) {
   await recorrerPromovidos(
     zona,
     async ({ indexSeccional, page, seccional }) => {
-      const promovidosGuardadosEnSistema = await obtenerDatosPromovidos(page);
-      await verificarPromovidosRegistrados(
-        promovidosGuardadosEnSistema,
-        seccional.seccion
-      );
+      const promovidosEnSistema = await obtenerPromovidosEnSistema(page);
+      await verificarPromovidosRegistrados(promovidosEnSistema);
 
       for (let i = 0; i < promovidosPorLote; i += 1) {
         const registrado = await registrarPromovido(page, seccional, zona);
@@ -39,6 +38,36 @@ export async function registrosAutomaticos(zona) {
 
 /**
  * @param {import('puppeteer').Page} page
+ * @returns {Promise<import("../types.js").Promovido[]>} 
+ */
+async function obtenerPromovidosEnSistema(page) {
+  const promovidosTabla = await obtenerDatosPromovidos(page);
+
+  const promovidosEnSistema = [];
+  for (let i = 0; i < promovidosTabla.length; i += 1) {
+    await clickPromovido(page, i);
+    const resp = await page.waitForResponse(API_CONSULTA_GENERAL_ID);
+    await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, { visible: true });
+
+    /** @type {import("../types.js").PromovidoResponse} */
+    const { d: promovido } = await resp.json();
+    promovidosEnSistema.push(promovido);
+
+    await page.evaluate(() => {
+      const modal = document.getElementById("modalCapturaGeneral");
+      const button = modal.querySelector(".btn-close");
+      button.click();
+    });
+    await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, {
+      hidden: true,
+    });
+  }
+
+  return promovidosEnSistema;
+}
+
+/**
+ * @param {import('puppeteer').Page} page
  * @param {{ seccion: number }} seccional
  * @returns {Promise<boolean>}
  */
@@ -49,9 +78,11 @@ async function registrarPromovido(page, seccional, zona) {
   await page.waitForSelector(SELECTORES.BOTON_AGREGAR_PROMOVIDO, {
     visible: true,
   });
+
   await page.evaluate(() => {
     document.getElementById("botonAgregarPromovido").click();
   });
+
   await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, {
     visible: true,
   });

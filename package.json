@@ -6,9 +6,9 @@
   "main": "index.js",
   "scripts": {
     "start": "pm2 start ecosystem.config.cjs",
-    "dev": "nodemon index.js",
-    "reporte": "node cmd/generar-reporte.js",
-    "load": "node cmd/cargar-db.js",
+    "dev": "nodemon src/index.js",
+    "reporte": "node src/cmd/generar-reporte.js",
+    "load": "node src/cmd/cargar-db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
