@@ -9,6 +9,7 @@ import {
 import { recorrerPromovidos } from "../functions/recorrer-promovidos.js";
 import { clickPromovido, clickearFila } from "../functions/clickear-fila.js";
 import { API_CONSULTA_GENERAL_ID } from "../constants/urls.js";
+import Promotor from "../models/promotor.js";
 
 const { PROMOVIDOS_POR_LOTE } = process.env;
 const promovidosPorLote = Number(PROMOVIDOS_POR_LOTE || 1);
@@ -18,9 +19,14 @@ const esProd = process.env.NODE_ENV === "production";
 export async function registrosAutomaticos(zona) {
   await recorrerPromovidos(
     zona,
-    async ({ indexSeccional, page, seccional }) => {
-      const promovidosEnSistema = await obtenerPromovidosEnSistema(page);
-      await verificarPromovidosRegistrados(promovidosEnSistema);
+    async ({ indexSeccional, page, seccional, promotor }) => {
+      promotor.seccion = seccional.seccion;
+      const promotorVerificado = await verificarPromotor(promotor);
+
+      if (!promotorVerificado) {
+        const promovidosEnSistema = await obtenerPromovidosEnSistema(page);
+        await verificarPromovidosRegistrados(promovidosEnSistema);
+      }
 
       for (let i = 0; i < promovidosPorLote; i += 1) {
         const registrado = await registrarPromovido(page, seccional, zona);
@@ -34,6 +40,18 @@ export async function registrosAutomaticos(zona) {
       }
     }
   );
+}
+
+/**
+ * @param {import("../types.js").Promotor} promotor 
+ * @returns {Promise<boolean>}
+ */
+async function verificarPromotor(promotor) {
+  const { clave } = promotor;
+  const promotorDb = await Promotor.findOne({ clave });
+  if (promotorDb) return true;
+  await Promotor.create(promotor);
+  return false;
 }
 
 /**

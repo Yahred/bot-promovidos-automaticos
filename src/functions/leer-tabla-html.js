@@ -106,9 +106,10 @@ export async function obtenerDatosPromotores(page) {
     page,
     idTabla: SELECTORES.TABLA_PROMOTORES,
     props: {
-      1: 'nombre',
-      2: 'paterno',
-      3: 'materno',
+      1: 'clave',
+      2: 'nombre',
+      3: 'paterno',
+      4: 'materno',
     },
     computedProps: {
       nombreCompleto: COMPUTED.nombreCompleto,

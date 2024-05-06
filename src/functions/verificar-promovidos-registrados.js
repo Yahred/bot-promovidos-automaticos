@@ -5,7 +5,7 @@ import Promovido from "../models/promovido.js";
  */
 export async function verificarPromovidosRegistrados(promovidos) {
   await Promovido.updateMany({
-    celular: promovidos.map(({ celular }) => celular),
+    celular: { $in: promovidos.map(({ celular }) => celular) },
   }, {
     guardado: true,
   });

@@ -15,6 +15,17 @@
  */
 
 /**
+ * @typedef {Object} Promotor
+ * @property {string} nombreCompleto
+ * @property {number} seccion
+ * @property {string} nombre
+ * @property {string} paterno
+ * @property {string} materno
+ * @property {number} clave
+ */
+
+
+/**
  * @typedef {Object} PromovidoResponse
  * @property {{
  *   ID: number,

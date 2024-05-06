@@ -25,6 +25,8 @@ const promovidoSchema = new Schema({
   collection: 'promovidos',
 });
 
+promovidoSchema.index({ seccion: 1 });
+
 const Promovido = model('Promovido', promovidoSchema);
 
 export default Promovido;

@@ -22,6 +22,7 @@ const { USUARIO, PASS } = process.env;
  * @param {(params: {
  *  page: import('puppeteer').Page,
  *  seccional: { seccion: number };
+ *  promotor: import('../types.js').Promotor,
  *  indexSeccional: number; 
  *  indexComite: number;
  *  indexPromotor: number;
@@ -92,6 +93,7 @@ export async function recorrerPromovidos(zona, cb) {
     
     await page.waitForSelector(SELECTORES.TABLA_PROMOTORES, { visible: true });
     const promotores = await obtenerDatosPromotores(page);
+    /** @type {import("../types.js").Promotor} */
     const promotor = promotores[indexPromotor];
 
     if (!promotor) {
@@ -110,7 +112,7 @@ export async function recorrerPromovidos(zona, cb) {
       indexComite: nuevoIndexComite,
       indexPromotor: nuevoIndexPromotor,
       indexSeccional: nuevoIndexSeccion,
-    } = await cb({ indexComite, indexPromotor, indexSeccional, page, seccional }) || {};
+    } = await cb({ indexComite, indexPromotor, indexSeccional, page, seccional, promotor }) || {};
 
     indexComite = nuevoIndexComite ?? indexComite;
     indexSeccional = nuevoIndexSeccion ?? indexSeccional;
