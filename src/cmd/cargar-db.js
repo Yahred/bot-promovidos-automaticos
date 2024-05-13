@@ -3,6 +3,7 @@ import "dotenv/config";
 import mongoose from "mongoose";
 
 import Promovido from "../models/promovido.js";
+import Promotor from "../models/promotor.js";
 
 import {
   leerExcelPromovidos,
@@ -10,7 +11,7 @@ import {
 } from "../functions/leer-excel.js";
 
 console.time("tiempo");
-
+await Promotor.deleteMany();
 await Promovido.deleteMany();
 const hojas = await obtenerSeccionesPromovidos();
 for (const hoja of hojas) {
