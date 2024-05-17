@@ -15,7 +15,7 @@ import { clickComite, clickPromotor, clickSeccional, clickZona } from "./clickea
 const { HEADLESS } = process.env;
 const headless = !!Number(HEADLESS);
 
-const { USUARIO, PASS } = process.env;
+const { USUARIO, PASS, SLOW_MO } = process.env;
 
 /**
  * @param {string} zona 
@@ -29,11 +29,12 @@ const { USUARIO, PASS } = process.env;
  * }) => Promise<{ indexComite?: number; indexSeccional?: number; indexPromotor?: number; }>} cb 
  */
 export async function recorrerPromovidos(zona, cb) { 
-  const browser = await puppeteer.launch({ headless });
+  const browser = await puppeteer.launch({ headless, slowMo: (Number(SLOW_MO) || 0) });
   const page = await browser.newPage();
 
   await page.setViewport({ width: 1280, height: 1080 });
   await page.goto(URL_LOGIN);
+  await page.setDefaultTimeout(5000);
 
   const sesionIniciada = await iniciarSesion(page, USUARIO, PASS);
   if (!sesionIniciada) {

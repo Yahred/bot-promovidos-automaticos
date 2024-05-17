@@ -56,7 +56,7 @@ async function verificarPromotor(promotor) {
 
 /**
  * @param {import('puppeteer').Page} page
- * @returns {Promise<import("../types.js").Promovido[]>} 
+ * @returns {Promise<import("../types.js").PromovidoResponse['d'][]>} 
  */
 async function obtenerPromovidosEnSistema(page) {
   const promovidosTabla = await obtenerDatosPromovidos(page);

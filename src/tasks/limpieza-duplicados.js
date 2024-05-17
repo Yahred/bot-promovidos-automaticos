@@ -1,10 +1,11 @@
 import logger from "../functions/logger.js";
-import Promovido from "../models/promovido.js";
+import PromovidoLimpieza from "../models/promovido-limpieza.js";
 import { SELECTORES } from "../constants/selectores.js";
 import { API_CONSULTA_GENERAL_ID } from "../constants/urls.js";
 import { clickPromovido } from "../functions/clickear-fila.js";
 import { obtenerDatosPromovidos } from "../functions/leer-tabla-html.js";
 import { recorrerPromovidos } from "../functions/recorrer-promovidos.js";
+import { remplazarInput } from '../functions/reemplazar-input.js';
 
 const { NODE_ENV } = process.env;
 
@@ -29,6 +30,7 @@ export async function limpiezaDuplicados(zona) {
       const { d: promovido } = await resp.json();
 
       const {
+        ID: id,
         Nombre: nombre,
         Paterno: paterno,
         Celular: celular,
@@ -40,14 +42,16 @@ export async function limpiezaDuplicados(zona) {
         Seccional: seccion,
       } = promovido;
 
-      const promovidoDb = await Promovido.findOne({
-        nombre,
-        paterno,
-        celular,
-      }).lean();
+      if (nombre === BORRAR) continue;
+
+      let promovidoDb = await PromovidoLimpieza.findOne({
+        id,
+        activo: true,
+      });
 
       if (!promovidoDb) {
-        await Promovido.create({
+        promovidoDb = await PromovidoLimpieza.create({
+          id,
           nombre,
           paterno,
           cp,
@@ -56,37 +60,47 @@ export async function limpiezaDuplicados(zona) {
           colonia,
           materno,
           seccion,
+          celular,
           guardado: true,
         });
+      } else {
+        promovidoDb.id = id;
+        promovidoDb.guardado = true;
+        await promovidoDb.save();
       }
 
-      const repetido = await Promovido.findOne({
-        nombre: { $ne: nombre },
-        paterno: { $ne: paterno },
+      const repetido = await PromovidoLimpieza.findOne({
+        id: { $ne: id },
         celular,
         guardado: true,
-      }).lean();
+        activo: true,
+      });
 
       if (!repetido) continue;
 
-      await page.type(SELECTORES.TXT_NOMBRE, BORRAR);
-      await page.type(SELECTORES.TXT_PATERNO, BORRAR);
+      await remplazarInput({ page, selector: SELECTORES.TXT_NOMBRE, texto: BORRAR });
+      await remplazarInput({ page, selector: SELECTORES.TXT_PATERNO, texto: BORRAR });
+      await remplazarInput({ page, selector: SELECTORES.TXT_MATERNO, texto: BORRAR });
+
       logger.info(
         `Eliminando promovido repetido ${repetido.nombre} ${repetido.paterno}`
       );
 
       if (esProd) {
-        await page.evaluate((btnGuardar) => {
-          const modal = document.getElementById("modalCapturaGeneral");
-          const button = modal.querySelector(btnGuardar);
-          button.click();
-        }, SELECTORES.BOTON_GUARDAR_GENERAL);
-        await Promovido.deleteOne({ _id: repetido._id });
-        await page.waitForSelector(SELECTORES.SPINNER, { visible: false });
-        await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, {
-          hidden: true,
-        });
-        continue;
+        try {
+          await page.evaluate((btnGuardar) => {
+            const modal = document.getElementById("modalCapturaGeneral");
+            const button = modal.querySelector(btnGuardar);
+            button.click();
+          }, SELECTORES.BOTON_GUARDAR_GENERAL);
+          
+          promovidoDb.activo = false;
+          await promovidoDb.save();
+          await page.waitForSelector(SELECTORES.SPINNER, { visible: false });
+          await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, {
+            hidden: true,
+          });
+        } catch (error) { /** empty block */ }
       }
 
       await page.evaluate(() => {
