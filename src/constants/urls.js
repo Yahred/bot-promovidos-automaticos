@@ -1,6 +1,8 @@
-export const URL_LOGIN = 'https://sistemasinaloa.com/Login.aspx';
-export const URL_MENU = 'https://sistemasinaloa.com/Menu.aspx'
-export const URL_CAPTURA = 'https://sistemasinaloa.com/CapturaEstructura.aspx';
+export const URL = 'https://misinaloa.digital'
 
-export const API_CONSULTA_GENERAL_ID = 'https://sistemasinaloa.com/CapturaEstructura.aspx/ConsultaGeneralID';
+export const URL_LOGIN = 'https://misinaloa.digital/Login.aspx';
+export const URL_MENU = 'https://misinaloa.digital/Default.aspx'
+export const URL_CAPTURA = 'https://misinaloa.digital/CapturaEstructura.aspx';
+
+export const API_CONSULTA_GENERAL_ID = 'https://misinaloa.digital/CapturaEstructura.aspx/ConsultaGeneralID';
 export const API_CONSULTA_GENERAL = 'https://sistemasinaloa.com/CapturaEstructura.aspx/ConsultaGeneraL';

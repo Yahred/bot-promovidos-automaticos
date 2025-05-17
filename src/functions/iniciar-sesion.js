@@ -5,18 +5,18 @@
  * @returns {Promise<boolean>}
  */
 export async function iniciarSesion(page, usuario, pass) {
-  await page.waitForSelector('input[name="login"]', { visible: true });
+  await page.waitForSelector('input[name="username"]', { visible: true });
 
-  await page.type('input[name="login"]', usuario);
+  await page.type('input[name="username"]', usuario);
   await page.type('input[name="password"]', pass);
 
-  const botonLogin = "#botonIniciarSesion";
+  const botonLogin = "#botonIniciar";
   await page.waitForSelector(botonLogin, { visible: true });
   try {
     await Promise.all([
       page.waitForNavigation(),
       page.evaluate(() => {
-        document.getElementById("botonIniciarSesion").click();
+        document.getElementById("botonIniciar").click();
       }),
     ]);
     return true;

@@ -1,4 +1,4 @@
-import { SELECTORES } from '../constants/selectores.js';
+import { SELECTORES } from "../constants/selectores.js";
 
 /**
  * @param {{
@@ -6,42 +6,92 @@ import { SELECTORES } from '../constants/selectores.js';
  *  page: import('puppeteer').Page,
  *  index: number;
  *  selector: string;
- * }} params 
+ * }} params
  */
-export async function clickearFila({
-  page, index, selector, idTabla
-}) {
-  await page.evaluate((idTabla, index, selector) => {
-    const tbody = document.querySelector(`${idTabla} tbody`);
-    if (!tbody) return;
-    const rows = tbody.querySelectorAll("tr");
-    const boton = rows[index].querySelector(selector);
-    boton.click();
-  }, idTabla, index, selector);
+export async function clickearFila({ page, index, selector, idTabla }) {
+  await page.evaluate(
+    (idTabla, index, selector) => {
+      const tbody = document.querySelector(`${idTabla} tbody`);
+      if (!tbody) return;
+      const rows = tbody.querySelectorAll("tr");
+      const boton = rows[index].querySelector(selector);
+      boton.click();
+    },
+    idTabla,
+    index,
+    selector
+  );
 }
 
-export const clickSeccional = (page, index) => clickearFila({
-  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_SECCIONALES,
-});
+export const clickSeccional = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_SECCIONALES,
+  });
 
-export const clickComite = (page, index) => clickearFila({
-  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_COMITES,
-}); 
+export const clickComite = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_COMITES,
+  });
 
-export const clickPromotor = (page, index) => clickearFila({
-  page, index, selector: SELECTORES.ICONO_USUARIOS, idTabla: SELECTORES.TABLA_PROMOTORES,
-}); 
+export const clickPromotor = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_PROMOTORES,
+  });
 
-export const clickZona = (page, index) => clickearFila({
-  page,
-  index,
-  selector: SELECTORES.ICONO_USUARIOS,
-  idTabla: SELECTORES.TABLA_ZONA,
-});
+export const clickZona = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_ZONA,
+  });
 
-export const clickPromovido = (page, index) => clickearFila({
-  page,
-  index,
-  selector: SELECTORES.ICONO_LAPIZ,
-  idTabla: SELECTORES.TABLA_PROMOVIDOS,
-})
+export const clickPromovido = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_LAPIZ,
+    idTabla: SELECTORES.TABLA_PROMOVIDOS,
+  });
+
+export const clickRuta = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_COORDINADORES_COTS,
+  });
+
+export const clickVoluntario = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_VOLUNTARIOS,
+  });
+
+export const clickDl = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_COORDINADORES_DL,
+  });
+
+
+export const clicKSeccional = (page, index) =>
+  clickearFila({
+    page,
+    index,
+    selector: SELECTORES.ICONO_USUARIOS,
+    idTabla: SELECTORES.TABLA_SECCIONALES,
+  });

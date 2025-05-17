@@ -7,29 +7,30 @@ import {
   logPromovidoRegistrado,
 } from "../functions/logger.js";
 import { recorrerPromovidos } from "../functions/recorrer-promovidos.js";
-import { clickPromovido, clickearFila } from "../functions/clickear-fila.js";
+import { clickPromovido } from "../functions/clickear-fila.js";
 import { API_CONSULTA_GENERAL_ID } from "../constants/urls.js";
-import Promotor from "../models/promotor.js";
+
+import Voluntario from "../models/voluntario.js";
 
 const { PROMOVIDOS_POR_LOTE } = process.env;
 const promovidosPorLote = Number(PROMOVIDOS_POR_LOTE || 1);
 
 const esProd = process.env.NODE_ENV === "production";
 
-export async function registrosAutomaticos(zona) {
+export async function registrosAutomaticos(ruta) {
   await recorrerPromovidos(
-    zona,
-    async ({ indexSeccional, page, seccional, promotor }) => {
-      promotor.seccion = seccional.seccion;
-      const promotorVerificado = await verificarPromotor(promotor);
+    ruta,
+    async ({ indexSeccional, indexVoluntario, page, seccional, voluntario }) => {
+      voluntario.seccion = seccional.seccion;
+      const voluntarioVerificado = await verificarVoluntario(voluntario);
 
-      if (!promotorVerificado) {
+      if (voluntarioVerificado) {
         const promovidosEnSistema = await obtenerPromovidosEnSistema(page);
         await verificarPromovidosRegistrados(promovidosEnSistema);
       }
 
       for (let i = 0; i < promovidosPorLote; i += 1) {
-        const registrado = await registrarPromovido(page, seccional, zona);
+        const registrado = await registrarPromovido(page, seccional, ruta);
         if (registrado) continue;
 
         return {
@@ -43,14 +44,14 @@ export async function registrosAutomaticos(zona) {
 }
 
 /**
- * @param {import("../types.js").Promotor} promotor 
+ * @param {import("../types.js").Promotor} voluntario 
  * @returns {Promise<boolean>}
  */
-async function verificarPromotor(promotor) {
-  const { clave } = promotor;
-  const promotorDb = await Promotor.findOne({ clave });
-  if (promotorDb) return true;
-  await Promotor.create(promotor);
+async function verificarVoluntario(voluntario) {
+  const { clave } = voluntario;
+  const voluntarioDb = await Voluntario.findOne({ clave });
+  if (voluntarioDb) return true;
+  await Voluntario.create(voluntario);
   return false;
 }
 
@@ -62,9 +63,12 @@ async function obtenerPromovidosEnSistema(page) {
   const promovidosTabla = await obtenerDatosPromovidos(page);
 
   const promovidosEnSistema = [];
+
   for (let i = 0; i < promovidosTabla.length; i += 1) {
     await clickPromovido(page, i);
+    
     const resp = await page.waitForResponse(API_CONSULTA_GENERAL_ID);
+
     await page.waitForSelector(SELECTORES.MODAL_CAPTURA_PROMOVIDO, { visible: true });
 
     /** @type {import("../types.js").PromovidoResponse} */

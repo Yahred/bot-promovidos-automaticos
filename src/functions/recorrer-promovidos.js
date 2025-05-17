@@ -7,34 +7,95 @@ import {
   obtenerDatosCoordinadoresComite,
   obtenerDatosCoordinadoresZona,
   obtenerDatosPromotores,
+  obtenerCoordinadoresDl,
+  obtenerCoordinadoresCots,
+  obtenerVoluntarios,
 } from "./leer-tabla-html.js";
 import { URL_CAPTURA, URL_LOGIN } from "../constants/urls.js";
 import { SELECTORES } from "../constants/selectores.js";
-import { clickComite, clickPromotor, clickSeccional, clickZona } from "./clickear-fila.js";
+import {
+  clickComite,
+  clickDl,
+  clickPromotor,
+  clickRuta,
+  clickSeccional,
+  clickVoluntario,
+  clickZona,
+} from "./clickear-fila.js";
+import { abrirNavegador } from "./abrir-navegador.js";
 
 const { HEADLESS } = process.env;
 const headless = !!Number(HEADLESS);
 
-const { USUARIO, PASS, SLOW_MO } = process.env;
+const { USUARIO, PASS, SLOW_MO, DISTRITO, MAX_PROMOVIDOS } = process.env;
+
+const maxPromovidos = Number(MAX_PROMOVIDOS);
 
 /**
- * @param {string} zona 
+ * @param {import('puppeteer').Page} page
+ * @param {string} ruta
+ */
+async function moverHastaSeccionales(page, ruta) {
+  await page.goto(URL_CAPTURA);
+  await page.waitForSelector(SELECTORES.TABLA_COORDINADORES_MUNICIPAL, {
+    visible: true,
+  });
+  await page.click(SELECTORES.ICONO_USUARIOS);
+
+  await page.waitForSelector(SELECTORES.TABLA_COORDINADORES_DL, {
+    visible: true,
+  });
+
+  const coordinadoresDl = await obtenerCoordinadoresDl(page);
+
+  const indexCoordinadorDl = coordinadoresDl.findIndex(
+    ({ distritoLocal }) => distritoLocal === DISTRITO
+  );
+
+  if (!indexCoordinadorDl === -1) {
+    console.log("Distrito no encontrado");
+    process.exit(2);
+  }
+
+  await clickDl(page, indexCoordinadorDl);
+
+  await page.waitForSelector(SELECTORES.TABLA_COORDINADORES_COTS, {
+    visible: true,
+  });
+
+  const coordinadoresCots = await obtenerCoordinadoresCots(page);
+  const cotsIndex = coordinadoresCots.findIndex((c) => c.ruta === ruta);
+
+  await clickRuta(page, cotsIndex);
+
+  const coordinadorCots = coordinadoresCots[cotsIndex];
+  console.log(
+    `Coordinador cots: ${coordinadorCots.nombreCompleto}, ${coordinadorCots.ruta}`
+  );
+
+  await page.waitForSelector(SELECTORES.TABLA_SECCIONALES, { visible: true });
+  const seccionales = await obtenerDatosSeccionales(page);
+
+  return seccionales;
+}
+
+/**
+ * @param {string} ruta
  * @param {(params: {
  *  page: import('puppeteer').Page,
  *  seccional: { seccion: number };
- *  promotor: import('../types.js').Promotor,
- *  indexSeccional: number; 
- *  indexComite: number;
- *  indexPromotor: number;
- * }) => Promise<{ indexComite?: number; indexSeccional?: number; indexPromotor?: number; }>} cb 
+ *  indexSeccional: number;
+ *  indexVoluntario: number;
+ *  voluntario: any;
+ * }) => Promise<{ indexComite?: number; indexSeccional?: number; indexPromotor?: number; }>} cb
  */
-export async function recorrerPromovidos(zona, cb) { 
-  const browser = await puppeteer.launch({ headless, slowMo: (Number(SLOW_MO) || 0) });
-  const page = await browser.newPage();
+export async function recorrerPromovidos(ruta, cb) {
+  const { browser, page } = await abrirNavegador();
 
   await page.setViewport({ width: 1280, height: 1080 });
   await page.goto(URL_LOGIN);
-  await page.setDefaultTimeout(5000);
+
+  page.setDefaultTimeout(5000);
 
   const sesionIniciada = await iniciarSesion(page, USUARIO, PASS);
   if (!sesionIniciada) {
@@ -47,79 +108,59 @@ export async function recorrerPromovidos(zona, cb) {
     await dialog.accept();
   });
 
-  logger.info(`[${zona}]: Sesión iniciada ${USUARIO}:${PASS}.`);
-  await page.goto(URL_CAPTURA);
-  await page.waitForSelector(SELECTORES.TABLA_ZONA, { visible: true });
+  logger.info(`[${ruta}]: Sesión iniciada ${USUARIO}:${PASS}.`);
 
-  const coordinadoresZona = await obtenerDatosCoordinadoresZona(page);
-  const indexZona = coordinadoresZona.findIndex(({ zona: z }) => z === zona);
-
-  await clickZona(page, indexZona);
-
-  const coordinador = coordinadoresZona[indexZona];
-  console.log(`Coordinador de zona: ${coordinador.nombreCompleto}, ${coordinador.zona}`);
-
-  await page.waitForSelector(SELECTORES.TABLA_SECCIONALES, { visible: true });
-  const seccionales = await obtenerDatosSeccionales(page);
+  const seccionales = await moverHastaSeccionales(page, ruta);
 
   let indexSeccional = 0;
-  let indexComite = 0;
-  let indexPromotor = 0;
+  let indexVoluntario = 0;
+
   while (indexSeccional < seccionales.length) {
     await page.reload();
-    await page.waitForSelector(SELECTORES.TABLA_ZONA, { visible: true });
-    await page.waitForSelector(SELECTORES.SPINNER, { visible: false });
 
-    await clickZona(page, indexZona);
-  
-    await page.waitForSelector(SELECTORES.TABLA_SECCIONALES, { visible: true });
-    await clickSeccional(page, indexSeccional);
+    await moverHastaSeccionales(page, ruta);
 
     const seccional = seccionales[indexSeccional];
-    console.log(`[${zona}]: Coordinador de sección: ${seccional.nombreCompleto}`);
+    console.log(
+      `[${ruta}]: Coordinador de sección: ${seccional.nombreCompleto}`
+    );
 
-    await page.waitForSelector(SELECTORES.TABLA_COMITES, { visible: true });
-    const comites = await obtenerDatosCoordinadoresComite(page);
+    await clickSeccional(page, indexSeccional);
 
-    const comite = comites[indexComite];
-    if (!comite) {
+    await page.waitForSelector(SELECTORES.TABLA_VOLUNTARIOS, { visible: true });
+    
+    const voluntarios = await obtenerVoluntarios(page);
+    const voluntario = voluntarios[indexVoluntario];
+
+    if (!voluntario) {
       indexSeccional += 1;
-      indexPromotor = 0;
-      indexComite = 0;
+      indexVoluntario = 0;
       continue;
     }
-    
-    console.log(`[${zona}]: Cómite: ${comite.nombreCompleto}`);
-    await clickComite(page, indexComite);
-    
-    await page.waitForSelector(SELECTORES.TABLA_PROMOTORES, { visible: true });
-    const promotores = await obtenerDatosPromotores(page);
-    /** @type {import("../types.js").Promotor} */
-    const promotor = promotores[indexPromotor];
 
-    if (!promotor) {
-      indexComite += 1;
-      indexPromotor = 0;
+    if (voluntario.numeroCoordinadores >= maxPromovidos) {
+      console.log(
+        `[${ruta}]: Voluntario completo ${voluntario.numeroCoordinadores}: ${voluntario.nombreCompleto}`
+      );
+      indexVoluntario += 1;
       continue;
     }
-    
-    console.log(`[${zona}]: Promotor: ${promotor.nombreCompleto}`);
-    await clickPromotor(page, indexPromotor);
-    await page.waitForSelector(SELECTORES.BOTON_AGREGAR_PROMOVIDO, {
-      visible: true,
+
+    console.log(`[${ruta}]: Voluntario: ${voluntario.nombreCompleto}`);
+
+    await clickVoluntario(page, indexVoluntario);
+    await page.waitForSelector(SELECTORES.TABLA_PROMOVIDOS, { visible: true });
+
+    await cb({
+      page,
+      seccional,
+      voluntario,
+      indexSeccional,
+      indexVoluntario,
     });
 
-    const { 
-      indexComite: nuevoIndexComite,
-      indexPromotor: nuevoIndexPromotor,
-      indexSeccional: nuevoIndexSeccion,
-    } = await cb({ indexComite, indexPromotor, indexSeccional, page, seccional, promotor }) || {};
-
-    indexComite = nuevoIndexComite ?? indexComite;
-    indexSeccional = nuevoIndexSeccion ?? indexSeccional;
-    indexPromotor = nuevoIndexPromotor ?? indexPromotor + 1;
+    indexVoluntario += 1;
   }
 
   await browser.close();
 }
-

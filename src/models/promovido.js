@@ -4,6 +4,7 @@ import { Schema, model } from "mongoose";
 
 const promovidoSchema = new Schema({
   id: { type: Number, required: false },
+  clave: { type: String, required: true },
   seccion: { type: Number },
   nombre: { type: String },
   paterno: { type: String },
